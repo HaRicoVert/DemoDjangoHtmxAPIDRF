@@ -1,0 +1,82 @@
+[
+  {
+    "id": 2,
+    "title": "Ne tirez pas sur l'oiseau moqueur",
+    "author": "Urban Karpinski",
+    "year": "7474-07-18",
+    "pages": 9,
+    "price": "412.17"
+  },
+  {
+    "id": 3,
+    "title": "Autant en emporte le vent",
+    "author": "Saverio Gullo",
+    "year": "8936-07-31",
+    "pages": 1,
+    "price": "258.75"
+  },
+  {
+    "id": 4,
+    "title": "Shining",
+    "author": "Cassandria Mayor",
+    "year": "9185-06-30",
+    "pages": 837,
+    "price": "169.00"
+  },
+  {
+    "id": 5,
+    "title": "Cent Ans de Solitude",
+    "author": "Dawn Forest",
+    "year": "1003-12-31",
+    "pages": 525,
+    "price": "521.82"
+  },
+  {
+    "id": 6,
+    "title": "Harry Potter à l'école des sorciers",
+    "author": "Saulo Yoakum",
+    "year": "8903-10-31",
+    "pages": 117,
+    "price": "398.57"
+  },
+  {
+    "id": 7,
+    "title": "Les Trois Mousquetaires",
+    "author": "Lakyn Bandy",
+    "year": "8713-11-25",
+    "pages": 8,
+    "price": "564.57"
+  },
+  {
+    "id": 8,
+    "title": "L'Odyssée",
+    "author": "Tove Rumsey",
+    "year": "7806-12-13",
+    "pages": 99,
+    "price": "91.56"
+  },
+  {
+    "id": 9,
+    "title": "Les Chroniques de Narnia",
+    "author": "Cyler Watanabe",
+    "year": "6116-11-09",
+    "pages": 9,
+    "price": "953.70"
+  },
+  {
+    "id": 10,
+    "title": "Les Cerfs-volants de Kaboul",
+    "author": "Monet Jerry",
+    "year": "2392-12-30",
+    "pages": 6,
+    "price": "668.72"
+  },
+  {
+    "id": 11,
+    "title": "Le Seigneur des Anneaux",
+    "author": "Shayda Garica",
+    "year": "1027-04-04",
+    "pages": 267,
+    "price": "59.52"
+  }
+]

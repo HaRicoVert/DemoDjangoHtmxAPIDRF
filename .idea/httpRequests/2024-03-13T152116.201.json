@@ -1,0 +1,74 @@
+[
+  {
+    "id": 46,
+    "title": "La Route",
+    "author": "Hernandez Katz",
+    "year": "5861-08-01",
+    "pages": 81,
+    "price": "397.69"
+  },
+  {
+    "id": 47,
+    "title": "Frankenstein",
+    "author": "Noami Marcello",
+    "year": "5410-11-02",
+    "pages": 6,
+    "price": "696.12"
+  },
+  {
+    "id": 48,
+    "title": "L'Alchimiste",
+    "author": "Mahalia Stilwell",
+    "year": "9510-03-17",
+    "pages": 309,
+    "price": "295.01"
+  },
+  {
+    "id": 49,
+    "title": "Les Cerfs-volants de Kaboul",
+    "author": "Paul Silverberg",
+    "year": "9988-11-05",
+    "pages": 40,
+    "price": "46.28"
+  },
+  {
+    "id": 50,
+    "title": "Moby-Dick",
+    "author": "Deren Knuth",
+    "year": "6355-11-26",
+    "pages": 0,
+    "price": "260.42"
+  },
+  {
+    "id": 51,
+    "title": "Moby-Dick",
+    "author": "Tarell Mysliwiec",
+    "year": "1405-12-08",
+    "pages": 86,
+    "price": "693.64"
+  },
+  {
+    "id": 52,
+    "title": "Nos étoiles contraires",
+    "author": "Roshawnda Czech",
+    "year": "6119-03-16",
+    "pages": 0,
+    "price": "719.65"
+  },
+  {
+    "id": 53,
+    "title": "Cent Ans de Solitude",
+    "author": "Ronique Yowell",
+    "year": "3304-10-31",
+    "pages": 7,
+    "price": "787.52"
+  },
+  {
+    "id": 54,
+    "title": "Frankenstein",
+    "author": "Noami Marcello",
+    "year": "5410-11-02",
+    "pages": 6,
+    "price": "696.12"
+  }
+]
