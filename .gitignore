@@ -1,0 +1,4 @@
+/.idea/
+/.venv/
+/demo/migrations/
+db.sqlite3
