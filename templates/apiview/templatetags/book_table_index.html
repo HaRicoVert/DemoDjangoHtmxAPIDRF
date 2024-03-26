@@ -1,20 +1,20 @@
 {% for book in self %}
 	<tr>
-		<td onclick="showBookModalAndUpdateInputFields(event);"
-		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none">{{ book.title }}</td>
-		<td onclick="showBookModalAndUpdateInputFields(event);"
-		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none">{{ book.author }}</td>
-		<td onclick="showBookModalAndUpdateInputFields(event);"
-		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none">{{ book.pub_date }}</td>
-		<td onclick="showBookModalAndUpdateInputFields(event);"
-		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none">{{ book.pages }}</td>
-		<td onclick="showBookModalAndUpdateInputFields(event);"
-		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none">{{ book.price }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.title }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.author }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.year | date:'d/m/Y' }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.pages }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.price }}</td>
 		<td>
 			<button class="fr-btn fr-btn--secondary fr-btn--close fr-btn--sm"
 			        hx-confirm="Êtes vous sur de vouloir supprimer le livre « {{ book.title }} » ?"
 			        hx-on::response-error="alert('Erreur lors de la suppression !');"
-			        hx-delete="{% url 'book-detail' book.id %}" hx-target="closest tr">
+			        hx-delete="{% url 'book-detail' book.id %}" hx-target="closest tr" {% if perms.demo.delete_book %}disabled{% endif %} >
 				Supprimer
 			</button>
 		</td>

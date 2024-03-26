@@ -1,0 +1,9 @@
+### On récupère le token
+POST http://localhost:8000/apiDRF/token/
+Content-Type: application/json
+
+{
+  "username": "rico",
+  "password": "1234"
+}
+

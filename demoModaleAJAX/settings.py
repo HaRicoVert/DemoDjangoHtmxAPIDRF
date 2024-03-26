@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,8 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
                   'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'widget_tweaks',
-                  'dsfr', 'django_browser_reload', 'rest_framework', 'demo.apps.DemoConfig',
-                  'apiview.apps.ApiviewConfig']
+                  'dsfr', 'django_browser_reload', 'rest_framework', 'rest_framework.authtoken', 'demo.apps.DemoConfig',
+                  'apiview.apps.ApiviewConfig', 'form.apps.FormConfig', 'customdsfr.apps.CustomdsfrConfig', ]
 
 MIDDLEWARE = ['django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
               'django.middleware.common.CommonMiddleware', 'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,7 +46,7 @@ ROOT_URLCONF = 'demoModaleAJAX.urls'
 
 TEMPLATES = [{
     'BACKEND':  'django.template.backends.django.DjangoTemplates',
-    'DIRS':     [BASE_DIR / 'templates'],
+    'DIRS':     [BASE_DIR / 'templates', BASE_DIR / 'customdsfr/templatetags', ],
     'APP_DIRS': True,
     'OPTIONS':  {
         'context_processors': ['django.template.context_processors.debug', 'django.template.context_processors.request',
@@ -102,5 +102,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    "DATE_INPUT_FORMATS": ["%d-%m-%Y"],
+    'DATE_INPUT_FORMATS':             ['%d-%m-%Y', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication',
+                                       'rest_framework.authentication.TokenAuthentication', ],
+    'DEFAULT_PERMISSION_CLASSES':     ['rest_framework.permissions.IsAuthenticated', 'rest_framework.permissions.IsAdminUser', ]
 }
+
+DATE_FORMAT = "%d-%m-%Y"
+USE_L10N = False
+
+LOGIN_URL = '/login/'
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', ]

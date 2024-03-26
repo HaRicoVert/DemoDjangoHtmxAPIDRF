@@ -5,11 +5,11 @@
 * @returns {Promise<void>}
 * @constructor
 */
-function formValidationEventListener(form, apiVerificationLink) {
+function formValidationEventListener(form, apiVerificationLink, csrfToken) {
     // On ajoute un listener sur le formulaire de la modale pour valider les champs du formulaire
     // lorsqu'un champ est modifié
     form.addEventListener('input', async (event) => {
-        await formValidationLogic(event.target, apiVerificationLink);
+        await formValidationLogic(event.target, apiVerificationLink, csrfToken);
     });
 }
 
@@ -20,7 +20,7 @@ function formValidationEventListener(form, apiVerificationLink) {
  * @returns {Promise<void>}
  * @constructor
  */
-async function formValidationLogic(input, apiVerificationLink) {
+async function formValidationLogic(input, apiVerificationLink, csrfToken) {
     // On récupère le nom du champ du formulaire
     const inputName = input.getAttribute('name');
     var formBody;
@@ -39,7 +39,8 @@ async function formValidationLogic(input, apiVerificationLink) {
         const response = await fetch(apiVerificationLink, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
             },
             body: formBody
         })
@@ -78,10 +79,15 @@ function formValidationSuccess(divInputGroup) {
     input.setAttribute('aria-describedby', `${input.getAttribute('type')}-input-valid-desc-valid`);
 
     if (!divInputGroup.querySelector('p.fr-valid-text')) {
-        var spanValid = document.createElement('p');
-        spanValid.className = 'fr-valid-text show';
-        spanValid.textContent = "Le champ est valide";
-        divInputGroup.appendChild(spanValid);
+        var pValid = document.createElement('p');
+        pValid.className = 'fr-valid-text show';
+        pValid.textContent = "Le champ est valide";
+        var divSuccess = document.createElement('div');
+        divSuccess.className = 'fr-messages-group';
+        divSuccess.id = input.id + '-messages';
+        divSuccess.ariaLive = 'assertive';
+        divSuccess.appendChild(pValid);
+        divInputGroup.appendChild(divSuccess);
     }
 }
 
@@ -102,10 +108,8 @@ function formValidationClear(divInputGroup) {
     input.classList.remove('show');
     input.removeAttribute('aria-describedby');
 
-    if (divInputGroup.querySelector('p.fr-error-text')) {
-        divInputGroup.querySelector('p.fr-error-text').remove();
-    } else if (divInputGroup.querySelector('p.fr-valid-text')) {
-        divInputGroup.querySelector('p.fr-valid-text').remove();
+    if (divInputGroup.querySelector('div.fr-messages-group')) {
+        divInputGroup.querySelector('div.fr-messages-group').remove();
     }
 }
 
@@ -128,9 +132,14 @@ function formValidationError(divInputGroup, errors) {
     input.setAttribute('aria-describedby', `${input.getAttribute('type')}-input-error-desc-error`);
 
     if (!divInputGroup.querySelector('p.fr-error-text')) {
-        var spanError = document.createElement('p');
-        spanError.className = 'fr-error-text show';
-        spanError.textContent = errors[Object.keys(errors)[0]];
-        divInputGroup.appendChild(spanError);
+        var pError = document.createElement('p');
+        pError.className = 'fr-error-text show';
+        pError.textContent = errors[Object.keys(errors)[0]];
+        var divError = document.createElement('div');
+        divError.className = 'fr-messages-group';
+        divError.id = input.id + '-messages';
+        divError.ariaLive = 'assertive';
+        divError.appendChild(pError);
+        divInputGroup.appendChild(divError);
     }
 }

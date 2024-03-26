@@ -9,9 +9,10 @@
 	<link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
 {% endblock %}
 {% block header %}
-	{% include "dsfr/header.html" %}
+	{% include 'demo/block/header.html' %}
 {% endblock header %}
 {% block content %}
+	<h1>Bonjour {{ user.get_username }} - {{ perms.book }} !</h1>
 	<div id="loader" style="display: none;">
         <div class="loader-content">
             <div class="loader-spinner"></div>
@@ -122,12 +123,19 @@
 	<script src="{% static 'js/formUpdateInputFieldsValue.js' %}"></script>
 	<script src="{% static 'js/formValidationEventListener.js' %}"></script>
 	<script defer>
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 		const apiUrlBookFormFieldValidation = "{% url 'book-form-field-validation' %}";
 		
 		const modalBook = document.getElementById('fr-modal-book');
 		const modalBookForm = document.getElementById('bookModalForm');
 		var modalBookFormDefaultValue = {};
-		
+
+		document.body.addEventListener('htmx:configRequest', function (event) {
+			if (event.detail.verb !== 'get') {
+				event.detail.headers['X-CSRFToken'] = csrfToken;
+			}
+		});
+
 		/*
 		 * Fonction qui permet de récupérer les données d'un livre et de les afficher dans la modale
 		 * @param {Object} event - Événement déclenché par le clic sur un bouton
@@ -154,8 +162,10 @@
 					// Si une erreur se produit, on l'affiche dans la console
 					.catch(error => console.error("Une erreur s'est produite : ", error));
 		}
-		
+
+		let bookTable = document.getElementById('book-table-index');
+
 		formSubmitEventListener(modalBookForm);
-		formValidationEventListener(modalBookForm, apiUrlBookFormFieldValidation);
+		formValidationEventListener(modalBookForm, apiUrlBookFormFieldValidation, csrfToken);
 	</script>
 {% endblock %}

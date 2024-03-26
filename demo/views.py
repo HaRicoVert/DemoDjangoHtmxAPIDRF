@@ -1,8 +1,14 @@
-from django.shortcuts import render
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.shortcuts import (
+    render,
+    redirect,
+)
+from django.urls import reverse_lazy
 
 
-# Create your views here.
-
+@login_required()
 def index(
     request
 ):
@@ -12,29 +18,37 @@ def index(
     )
 
 
-def test(
+def form(
     request
 ):
     return render(
         request,
-        'demo/testtable.html'
+        'form/form.html'
     )
 
 
-def test2(
+def test_input_validation(
     request
 ):
     return render(
         request,
-        'demo/test.html'
+        'demo/testInputValidation.html'
     )
 
 
-def book_table(
+def logout_view(
     request
 ):
-    # On regarde les 
-    return render(
-        request,
-        'demo/table.html'
+    logout(
+        request
     )
+    return redirect(
+        'index'
+    )
+
+
+class CustomLoginView(LoginView):
+    template_name = 'demo/login.html'
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('home')
+

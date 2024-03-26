@@ -1,0 +1,142 @@
+{% extends "dsfr/base.html" %}
+{% load dsfr_tags %}
+{% load static %}
+{% block extra_css %}
+	<script src="https://unpkg.com/htmx.org@1.9.10"
+	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+	        crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+	<link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+{% endblock %}
+{% block header %}
+	{% include "dsfr/header.html" %}
+{% endblock header %}
+{% block content %}
+	<div id="loader" style="display: none;">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Chargement...</p>
+        </div>
+    </div>
+	<div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center"
+             style="display: flex; flex-direction: column; align-items: center;">
+            <div class="fr-table fr-table--layout-fixed">
+	            <table>
+			        <caption>Tableau d'exemple GAIN 2.0</caption>
+			        <thead>
+			            <tr>
+			                <th scope="colgroup" colspan="4" style="text-align: center">Entité: ANDORRE</th>
+			            </tr>
+			        </thead>
+		            <tbody>
+				        <tr>
+					        <th scope="row">Domaine / Filière / Fonction</th>
+			                <td><p>DRHFS</p></td>
+			                <td><p>Coopération Opérationnelle</p></td>
+			                <td><p>SSI</p></td>
+		                </tr>
+		            <tr>
+			            <th scope="row">Point clé de performance</th>
+			            <td colspan="2">Je sais plus ce qui était écrit</td>
+			            <td><span class="fr-icon-error-line" aria-hidden="true"></span></td>
+		            </tr>
+		            </tbody>
+			    </table>
+            </div>
+	        <div class="fr-table fr-table--no-caption fr-table--layout-fixed">
+	            <table>
+			        <caption>Tableau d'exemple GAIN 2.0</caption>
+			        <thead></thead>
+		            <tbody>
+				        <tr>
+					        <th scope="row" colspan="1">Libellée</th>
+			                <td colspan="3">
+				                <div class="fr-input-group">
+								    <label class="fr-label" for="text-input-groups-form__indicator">Nom de l'indicateur :</label>
+								    <input class="fr-input" type="text" id="text-input-groups-form__indicator"
+								           name="text-input-groups-form__indicator">
+								</div>
+				                <div style="display: flex;">
+					                <!--suppress CssInvalidPropertyValue -->
+					                <div class="fr-select-group"
+					                     style="width: -webkit-fill-available; padding-right: 1rem;">
+										<label class="fr-label" for="text-input-groups-form__indicator-type">Type d'indicateur :</label>
+										<select class="fr-select" id="text-input-groups-form__indicator-type"
+										        name="text-input-groups-form__indicator-type">
+											<option value="" selected disabled
+											        hidden>Sélectionner un indicateur</option>
+											<option value="1">Option 1</option>
+											<option value="2">Option 2</option>
+											<option value="3">Option 3</option>
+											<option value="4">Option 4</option>
+										</select>
+									</div>
+					                <div style="display: flex; align-items: center; justify-content: center; ">
+						                <p style="line-height: 1.5rem; margin-top: 0.5rem; width: max-content">N° 663</p>
+					                </div>
+				                </div>
+			                </td>
+		                </tr>
+		            <tr>
+				        <th scope="row" colspan="1">Périodicité</th>
+			            <td colspan="3">
+				            <!--suppress CssInvalidPropertyValue -->
+				            <div class="fr-select-group" style="width: -webkit-fill-available; padding-right: 1rem;">
+								<label class="fr-label" for="text-input-groups-form__periodicity">Périodicité :</label>
+								<select class="fr-select" id="text-input-groups-form__periodicity"
+								        name="text-input-groups-form__periodicity">
+									<option value="" selected disabled hidden>Sélectionner une option</option>
+									<option value="1">Année</option>
+									<option value="2">Semestre</option>
+									<option value="3">Trimestre</option>
+									<option value="4">Mois</option>
+								</select>
+							</div>
+			            </td>
+		            </tr>
+		            <tr>
+			            <th scope="row" colspan="1">Descriptif</th>
+			            <td colspan="3">
+				            <div class="fr-input-group">
+							    <label class="fr-label" for="text-input-groups-form__description">Descriptif :</label>
+					            <textarea class="fr-input" id="text-input-groups-form__description"
+					                      name="text-input-groups-form__description"
+					                      style="resize: vertical;"></textarea>
+							</div>
+			            </td>
+		            </tr>
+		            <tr>
+			            <th scope="row" colspan="1">Saisie détaillée</th>
+			            <td colspan="3">
+				            <div class="fr-checkbox-group">
+							    <input id="text-input-groups-form__detailed-entry" type="checkbox">
+							    <label class="fr-label"
+							           for="text-input-groups-form__detailed-entry">Saisie détaillée</label>
+							</div>
+			            </td>
+		            </tr>
+		            <tr>
+			            <th scope="row" colspan="1">Formule</th>
+			            <td colspan="3">
+				            <div class="fr-input-group">
+							    <label class="fr-label" for="text-input-groups-form__formula">Mode de calcul :</label>
+					            <input type="text" class="fr-input" id="text-input-groups-form__formula"
+					                   name="text-input-groups-form__formula">
+							</div>
+			            </td>
+		            </tr>
+		            </tbody>
+			    </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+	<script src="{% static 'js/formReset.js' %}"></script>
+	<script src="{% static 'js/formSubmitEventListener.js' %}"></script>
+	<script src="{% static 'js/formUpdateInputFieldsValue.js' %}"></script>
+	<script src="{% static 'js/formValidationEventListener.js' %}"></script>
+	<script defer></script>
+{% endblock %}

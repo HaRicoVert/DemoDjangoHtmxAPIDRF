@@ -1,0 +1,17 @@
+POST http://localhost:8000/apiDRF/books/
+
+[{
+    "title": "Nos étoiles contraires",
+    "author": "Shaen Kincaid",
+    "year": "31-11-4492",
+    "pages": "53",
+    "price": "281.39"
+},
+{
+    "title": "Les Trois Mousquetaires",
+    "author": "Celene Shin",
+    "year": "03-11-7254",
+    "pages": "575",
+    "price": "746.90"
+}]
+

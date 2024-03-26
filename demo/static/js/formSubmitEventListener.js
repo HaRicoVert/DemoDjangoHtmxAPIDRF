@@ -41,7 +41,12 @@ function formSubmitEventListener(form) {
             // On actualise le tableau des livres
             htmx.trigger('#book-table-index', 'htmx:afterOnRequest');
         } else {
-            alert("Erreur lors de l\'envoi du formulaire");
+            var response = JSON.parse(event.detail.xhr.response);
+            for (var key in response) {
+                if (response.hasOwnProperty(key)) {
+                    formValidationError(document.querySelector(`[name="text-input-book__${key}"]`).parentElement, JSON.parse(event.detail.xhr.response));
+                }
+            }
         }
     });
 }
