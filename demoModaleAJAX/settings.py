@@ -105,7 +105,8 @@ REST_FRAMEWORK = {
     'DATE_INPUT_FORMATS':             ['%d-%m-%Y', ],
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication',
                                        'rest_framework.authentication.TokenAuthentication', ],
-    'DEFAULT_PERMISSION_CLASSES':     ['rest_framework.permissions.IsAuthenticated', 'rest_framework.permissions.IsAdminUser', ]
+    'DEFAULT_PERMISSION_CLASSES':     ['rest_framework.permissions.IsAuthenticated',
+                                       'rest_framework.permissions.IsAdminUser', ]
 }
 
 DATE_FORMAT = "%d-%m-%Y"

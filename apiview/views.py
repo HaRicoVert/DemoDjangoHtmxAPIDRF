@@ -7,28 +7,51 @@ from django.contrib.auth.decorators import (
 from django.shortcuts import render
 
 from api import views
+from demo.models import Book
 
 
 @login_required
-# @permission_required(
-#     'demo.view_book',
-#     raise_exception=True
-# )
+@permission_required(
+    'demo.view_book',
+    raise_exception=True
+)
 def book_table_index(
     request
 ):
+    # Récupération des données des livres à partir de la vue BookList
+    book_list_data = views.BookList().get(
+        request
+    ).data
+
+    # Transformation des données des livres en un format adapté pour le contexte
+    table_data_json = []
+    for book_data in book_list_data:
+        formatted_book_data = {
+            **book_data,
+            'year':      datetime.strptime(
+                book_data['year'],
+                '%Y-%m-%d'
+            ).date(),
+            'publisher': dict(
+                Book.PUBLISHERS
+            ).get(
+                book_data.get(
+                    'publisher'
+                )
+            )
+        }
+        table_data_json.append(
+            formatted_book_data
+        )
+
+    # Création du contexte pour le rendu de la page
+    context = {
+        "table_data_json": table_data_json
+    }
+
+    # Rendu de la page avec le contexte fourni
     return render(
         request,
         "apiview/book_table_index.html",
-        context={
-            "table_data_json": [{
-                **book_data,
-                'year': datetime.strptime(
-                    book_data['year'],
-                    '%Y-%m-%d'
-                ).date()
-            } for book_data in views.BookList().get(
-                request
-            ).data]
-        }
+        context
     )

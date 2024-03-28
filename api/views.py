@@ -1,8 +1,19 @@
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import HasViewPermission
+from api.permissions import (
+    HasViewPermission,
+    HasViewFlammarionPermission,
+    HasViewHachettePermission,
+    HasViewAlbinMichelPermission,
+    HasViewGallimardPermission,
+    HasViewLeLivreDePochePermission,
+    HasViewRobertLaffontPermission,
+    HasViewJaiLuPermission,
+    HasViewFayardPermission,
+)
 from api.serializers import (
     BookSerializer,
     IndicatorSerializer,
@@ -14,18 +25,56 @@ from form.models import Indicator
 class BookList(
     APIView
 ):
+    permission_classes = [
+        IsAdminUser | HasViewPermission | HasViewHachettePermission | HasViewFlammarionPermission | HasViewAlbinMichelPermission | HasViewGallimardPermission | HasViewLeLivreDePochePermission | HasViewRobertLaffontPermission | HasViewJaiLuPermission | HasViewFayardPermission]
+
     def get(
         self,
         request,
         format=None
     ):
-        books = Book.objects.all()
-        serializer = BookSerializer(
-            books,
-            many=True
+        if request.user.is_superuser:
+            books = Book.objects.all()
+            return Response(
+                BookSerializer(
+                    books,
+                    many=True
+                ).data
+            )
+
+        permission_to_publisher = {
+            'demo.view_hachette_book':          'A',
+            'demo.view_flammarion_book':        'B',
+            'demo.view_albin_michel_book':      'C',
+            'demo.view_gallimard_book':         'D',
+            'demo.view_le_livre_de_poche_book': 'E',
+            'demo.view_robert_laffont_book':    'F',
+            'demo.view_j_ai_lu_book':           'G',
+            'demo.view_fayard_book':            'H'
+        }
+
+        # Initialiser une liste vide pour stocker les éditeurs autorisés
+        allowed_publishers = []
+
+        # Vérifier les permissions de l'utilisateur et ajouter les éditeurs autorisés à la liste
+        for permission, publisher in permission_to_publisher.items():
+            if request.user.has_perm(
+                    permission
+            ):
+                allowed_publishers.append(
+                    publisher
+                )
+
+        # Filtrer les livres en fonction des éditeurs autorisés
+        books = Book.objects.filter(
+            publisher__in=allowed_publishers
         )
+
         return Response(
-            serializer.data
+            BookSerializer(
+                books,
+                many=True
+            ).data
         )
 
     def post(
@@ -63,8 +112,6 @@ class BookList(
 class BookDetail(
     APIView
 ):
-    permission_classes = [HasViewPermission]
-
     def get(
         self,
         request,

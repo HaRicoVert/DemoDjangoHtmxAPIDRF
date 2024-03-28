@@ -12,7 +12,7 @@
 	{% include 'demo/block/header.html' %}
 {% endblock header %}
 {% block content %}
-	<h1>Bonjour {{ user.get_username }} - {{ perms.book }} !</h1>
+	<h1>Bonjour {{ user.get_username }} - {{ perms.perms }} !</h1>
 	<div id="loader" style="display: none;">
         <div class="loader-content">
             <div class="loader-spinner"></div>
@@ -108,7 +108,8 @@
 			                <th scope="col">Date de parution</th>
 			                <th scope="col">Nombre de pages</th>
 			                <th scope="col">Prix</th>
-			                <th scope="col"></th>
+				            <th scope="col">Éditeur</th>
+			                <th scope="col">Suppression</th>
 			            </tr>
 			        </thead>
 			        <tbody></tbody>

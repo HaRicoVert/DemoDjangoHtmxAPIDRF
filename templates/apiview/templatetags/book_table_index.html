@@ -10,6 +10,8 @@
 		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.pages }}</td>
 		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
 		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.price }}</td>
+		<td {% if perms.demo.view_book %}onclick="showBookModalAndUpdateInputFields(event);"
+		    hx-get="{% url 'book-detail' book.id %}" hx-swap="none"{%endif%}>{{ book.publisher }}</td>
 		<td>
 			<button class="fr-btn fr-btn--secondary fr-btn--close fr-btn--sm"
 			        hx-confirm="Êtes vous sur de vouloir supprimer le livre « {{ book.title }} » ?"
