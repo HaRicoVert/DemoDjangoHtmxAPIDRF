@@ -7,8 +7,10 @@ register = template.Library()
     "apiview/templatetags/book_table_index.html"
 )
 def book_table_index(
-    table_data_json
+    table_data_json,
+    perms
 ) -> dict:
     return {
-        "self": table_data_json
+        "self": table_data_json,
+        "perms": perms
     }

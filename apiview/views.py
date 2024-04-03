@@ -7,12 +7,12 @@ from django.contrib.auth.decorators import (
 from django.shortcuts import render
 
 from api import views
-from demo.models import Book
+from book.models import Book
 
 
 @login_required
 @permission_required(
-    'demo.view_book',
+    'book.view_book',
     raise_exception=True
 )
 def book_table_index(
@@ -49,7 +49,6 @@ def book_table_index(
         "table_data_json": table_data_json
     }
 
-    # Rendu de la page avec le contexte fourni
     return render(
         request,
         "apiview/book_table_index.html",

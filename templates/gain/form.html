@@ -1,0 +1,359 @@
+{% extends "dsfr/base.html" %}
+{% load dsfr_tags %}
+{% load static %}
+{% block extra_css %}
+	<script src="https://unpkg.com/htmx.org@1.9.10"
+	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+	        crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+	<link rel="stylesheet" href="{% static 'css/dsfr_form.css' %}">
+{% endblock %}
+{% block header %}
+	{% include 'book/block/header.html' %}
+{% endblock header %}
+{% block content %}
+	<div id="loader" style="display: none;">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Chargement...</p>
+        </div>
+    </div>
+	<div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center"
+             style="display: flex; flex-direction: column; align-items: center;">
+	        <form id="indicatorForm" hx-post="{% url 'gain-list' %}" hx-swap="none">
+	        {% csrf_token %}
+	            <div class="fr-table fr-table--layout-fixed">
+		            <table>
+				        <caption>Tableau d'exemple GAIN 2.0</caption>
+				        <thead>
+				            <tr>
+				                <th scope="colgroup" colspan="4" style="text-align: center">Entité: ANDORRE</th>
+				            </tr>
+				        </thead>
+			            <tbody>
+					        <tr>
+						        <th scope="row">Domaine / Filière / Fonction</th>
+				                <td>
+					                {% dsfr_form_field form.domain %}
+				                </td>
+				                <td>
+					                {% dsfr_form_field form.sector %}
+				                </td>
+				                <td>
+					                {% dsfr_form_field form.function %}
+						        </td>
+			                </tr>
+			            <tr>
+				            <th scope="row">Point clé de performance</th>
+				            <td colspan="2">Je sais plus ce qui était écrit</td>
+				            <td><span class="fr-icon-error-line" aria-hidden="true"></span></td>
+			            </tr>
+			            </tbody>
+				    </table>
+	            </div>
+		        <div class="fr-table fr-table--no-caption fr-table--layout-fixed">
+		            <table>
+				        <caption>Tableau d'exemple GAIN 2.0</caption>
+				        <thead></thead>
+			            <tbody>
+					        <tr>
+						        <th scope="row" colspan="1">Libellée</th>
+				                <td colspan="3">
+					                {% dsfr_form_field form.label %}
+					                <div style="/*noinspection CssInvalidPropertyValue*/width: -webkit-fill-available">
+						                {% dsfr_form_field form.indicator_type %}
+					                </div>
+				                </td>
+			                </tr>
+				            <tr>
+						        <th scope="row" colspan="1">Périodicité</th>
+					            <td colspan="3">
+						            <!--suppress CssInvalidPropertyValue -->
+						            {% dsfr_form_field form.period %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Descriptif</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.description %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Saisie détaillée</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.sample_boolean %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Formule</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.formula %}
+					            </td>
+				            </tr>
+			            </tbody>
+				    </table>
+	            </div>
+	            <button type="submit" class="fr-btn fr-btn--secondary">Valider</button>
+	        </form>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+	{% comment %} <script src="{% static 'js/formValidationEventListener.js' %}"></script> {% endcomment %}
+	<script defer>
+
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const apiUrlIndicatorFormFieldValidation = "{% url 'gain-field-validation' %}";
+
+		document.body.addEventListener('htmx:configRequest', function (event) {
+			if (event.detail.verb !== 'get') {
+				event.detail.headers['X-CSRFToken'] = csrfToken;
+			}
+		});
+
+		const indicatorForm = document.getElementById('indicatorForm');
+
+		{% comment %}function formSubmitEventListener(gain) {
+			// On ajoute un listener sur le formulaire de la modale pour gérer l'événement après la requête
+			gain.addEventListener('htmx:afterRequest', (event) => {
+				// On vérifie la requête envoyée par htmx
+				// Si la requête a été envoyée avec succès
+				if (event.detail.successful) {
+					alert("Valide");
+				} else {
+					var response = JSON.parse(event.detail.xhr.response);
+					for (var key in response) {
+						if (response.hasOwnProperty(key)) {
+							formValidationError(gain.querySelector(`#${key}`).parentElement, JSON.parse(event.detail.xhr.response));
+						}
+					}
+				}
+			});
+		}
+
+		formSubmitEventListener(indicatorForm);
+		formValidationEventListener(indicatorForm, apiUrlIndicatorFormFieldValidation, csrfToken);{% endcomment %}
+		let errors = '{"domain": "Ce champ est obligatoire",' +
+				'"sector": "Ce champ est obligatoire",' +
+				'"function": "Ce champ est obligatoire",' +
+				'"label": "Ce champ est obligatoire",' +
+				'"indicator_type": "Ce champ est obligatoire",' +
+				'"period": "Ce champ est obligatoire",' +
+				'"description": "Ce champ est obligatoire",' +
+				'"detailed_entry": "Ce champ est obligatoire",' +
+				'"formula": "Ce champ est obligatoire"}';
+
+		errors = JSON.parse(errors);
+
+		function formValidationSuccess(divInputGroup, inputType) {
+			// Si le champ contenait une erreur, on l'enlève
+			const classesToCheck = ['fr-input-group--valid', 'fr-input-group--error', 'fr-checkbox-group--valid', 'fr-checkbox-group--error', 'fr-select-group--valid', 'fr-select-group--error'];
+			if (classesToCheck.some(cls => divInputGroup.classList.contains(cls))) {
+				formValidationClear(divInputGroup)
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour input/select
+			function createValidationMessageInputSelect(parentElement, inputId, validClassName, ariaDescribedBy) {
+				const pValid = document.createElement('p');
+				pValid.id = `${inputId}-desc-valid`;
+				pValid.className = 'fr-valid-text show';
+				pValid.textContent = "Le champ est valide";
+
+				parentElement.classList.add(`${validClassName}-group--valid`, 'show');
+				parentElement.querySelector(inputType).classList.add(`${validClassName}--valid`, 'show');
+				parentElement.querySelector(inputType).setAttribute('aria-describedby', ariaDescribedBy);
+				parentElement.appendChild(pValid);
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour checkbox/radio
+			function createValidationMessageCheckboxRadio(fieldsetInputGroup, inputType) {
+				const pValid = document.createElement('p');
+				pValid.className = 'fr-message fr-message--valid show';
+				pValid.textContent = "Le champ est valide";
+
+				const divSuccess = document.createElement('div');
+				divSuccess.className = 'fr-messages-group';
+				divSuccess.id = `${inputType}-valid-messages`;
+				divSuccess.ariaLive = 'assertive';
+				divSuccess.appendChild(pValid);
+
+				fieldsetInputGroup.classList.add('fr-fieldset--valid', 'show');
+				fieldsetInputGroup.setAttribute('aria-describedby', `${inputType}-valid-legend ${inputType}-valid-messages`);
+				fieldsetInputGroup.appendChild(divSuccess);
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour checkbox/radio seul
+			function createValidationMessageCheckboxRadioAlone(fieldsetInputGroup, inputType) {
+				const pValid = document.createElement('p');
+				pValid.className = 'fr-message fr-message--valid show';
+				pValid.textContent = "Le champ est valide";
+
+				const divSuccess = document.createElement('div');
+				divSuccess.className = 'fr-messages-group';
+				divSuccess.id = `${inputType}-valid-messages`;
+				divSuccess.ariaLive = 'assertive';
+				divSuccess.appendChild(pValid);
+
+				fieldsetInputGroup.classList.add('fr-checkbox-group--valid', 'show');
+				fieldsetInputGroup.querySelector('input', 'radio').setAttribute('aria-describedby', `${inputType}-valid-messages`)
+				fieldsetInputGroup.appendChild(divSuccess);
+			}
+
+			const input = divInputGroup.querySelector(inputType);
+
+			if (inputType === 'input') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-valid`);
+				}
+			} else if (inputType === 'textarea') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-valid`);
+				}
+			} else if (inputType === 'select') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-valid`);
+				}
+			} else if (inputType === 'checkbox' || inputType === 'radio') {
+				const fieldsetInputGroup = divInputGroup.closest('fieldset');
+				if (!fieldsetInputGroup) {
+					createValidationMessageCheckboxRadioAlone(divInputGroup, inputType);
+				} else if (!fieldsetInputGroup.querySelector('p.fr-message')) {
+					createValidationMessageCheckboxRadio(fieldsetInputGroup, inputType);
+				}
+			}
+		}
+
+		function formValidationError(divInputGroup, inputType, error) {
+			// Si le champ contenait une erreur, on l'enlève
+			const classesToCheck = ['fr-input-group--valid', 'fr-input-group--error', 'fr-checkbox-group--valid', 'fr-checkbox-group--error', 'fr-select-group--valid', 'fr-select-group--error'];
+			if (classesToCheck.some(cls => divInputGroup.classList.contains(cls))) {
+				formValidationClear(divInputGroup)
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour input/select
+			function createValidationMessageInputSelect(parentElement, inputId, validClassName, ariaDescribedBy, error) {
+				const pValid = document.createElement('p');
+				pValid.id = `${inputId}-desc-error`;
+				pValid.className = 'fr-error-text show';
+				pValid.textContent = error;
+
+				parentElement.classList.add(`${validClassName}-group--error`, 'show');
+				parentElement.querySelector(inputType).classList.add(`${validClassName}--error`, 'show');
+				parentElement.querySelector(inputType).setAttribute('aria-describedby', ariaDescribedBy);
+				parentElement.appendChild(pValid);
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour checkbox/radio
+			function createValidationMessageCheckboxRadio(fieldsetInputGroup, inputType, error) {
+				const pValid = document.createElement('p');
+				pValid.className = 'fr-message fr-message--error show';
+				pValid.textContent = error;
+
+				const divError = document.createElement('div');
+				divError.className = 'fr-messages-group';
+				divError.id = `${inputType}-error-messages`;
+				divError.ariaLive = 'assertive';
+				divError.appendChild(pValid);
+
+				fieldsetInputGroup.classList.add('fr-fieldset--error', 'show');
+				fieldsetInputGroup.setAttribute('aria-describedby', `${inputType}-error-legend ${inputType}-error-messages`);
+				fieldsetInputGroup.appendChild(divError);
+			}
+
+			// Fonction pour créer et ajouter un message de validation pour checkbox/radio seul
+			function createValidationMessageCheckboxRadioAlone(fieldsetInputGroup, inputType, error) {
+				const pValid = document.createElement('p');
+				pValid.className = 'fr-message fr-message--error show';
+				pValid.textContent = error;
+
+				const divError = document.createElement('div');
+				divError.className = 'fr-messages-group';
+				divError.id = `${inputType}-error-messages`;
+				divError.ariaLive = 'assertive';
+				divError.appendChild(pValid);
+
+				fieldsetInputGroup.classList.add('fr-checkbox-group--error', 'show');
+				fieldsetInputGroup.querySelector('input', 'radio').setAttribute('aria-describedby', `${inputType}-error-messages`)
+				fieldsetInputGroup.appendChild(divError);
+			}
+
+			const input = divInputGroup.querySelector(inputType);
+
+			if (inputType === 'input') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-error`, error);
+				}
+			} else if (inputType === 'textarea') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-error`, error);
+				}
+			} else if (inputType === 'select') {
+				if (!divInputGroup.querySelector('p.fr-valid-text')) {
+					console.log(divInputGroup);
+					createValidationMessageInputSelect(divInputGroup, input.id, input.classList[0], `${input.id}-desc-error`, error);
+				}
+			} else if (inputType === 'checkbox' || inputType === 'radio') {
+				const fieldsetInputGroup = divInputGroup.closest('fieldset');
+				if (!fieldsetInputGroup) {
+					createValidationMessageCheckboxRadioAlone(divInputGroup, inputType, error);
+				} else if (!fieldsetInputGroup.querySelector('p.fr-message')) {
+					createValidationMessageCheckboxRadio(fieldsetInputGroup, inputType, error);
+				}
+			}
+		}
+
+		function formValidationClear(divInputGroup) {
+			divInputGroup.classList.remove('fr-input-group--valid', 'fr-input-group--error', 'fr-checkbox-group--valid', 'fr-checkbox-group--error', 'fr-select-group--valid', 'fr-select-group--error', 'show');
+			divInputGroup.querySelector('input, select, textarea').classList.remove('fr-input--valid', 'fr-input--error', 'fr-select--valid', 'fr-select--error', 'show');
+			divInputGroup.querySelector('input, select, textarea').removeAttribute('aria-describedby');
+			divInputGroup.querySelector('p.fr-valid-text, p.fr-error-text, div.fr-messages-group').remove();
+		}
+
+
+		const textarea = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(5) > td > div")
+		const input = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(4) > td > div");
+		const description = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(3) > td > div");
+		const period = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(2) > td > div");
+		const typeIndicator = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(1) > td > div:nth-child(2) > div");
+		const label = document.querySelector("#indicatorForm > div.fr-table.fr-table--no-caption.fr-table--layout-fixed > table > tbody > tr:nth-child(1) > td > div.fr-input-group");
+		const input1 = document.querySelector("#indicatorForm > div:nth-child(2) > table > tbody > tr:nth-child(1) > td:nth-child(4) > div");
+		const input2 = document.querySelector("#indicatorForm > div:nth-child(2) > table > tbody > tr:nth-child(1) > td:nth-child(3) > div");
+		const input3 = document.querySelector("#indicatorForm > div:nth-child(2) > table > tbody > tr:nth-child(1) > td:nth-child(2) > div");
+
+		setInterval(() => {
+			formValidationSuccess(textarea, 'textarea');
+			formValidationSuccess(input, 'checkbox');
+			formValidationSuccess(description, 'textarea');
+			formValidationSuccess(period, 'select');
+			formValidationSuccess(typeIndicator, 'select');
+			formValidationSuccess(label, 'input');
+			formValidationSuccess(input1, 'select');
+			formValidationSuccess(input2, 'select');
+			formValidationSuccess(input3, 'select');
+		}, 2000);
+
+		setInterval(() => {
+			formValidationError(textarea, 'textarea', errors['formula']);
+			formValidationError(input, 'checkbox', errors['label']);
+			formValidationError(description, 'textarea', errors['description']);
+			formValidationError(period, 'select', errors['period']);
+			formValidationError(typeIndicator, 'select', errors['indicator_type']);
+			formValidationError(label, 'input', errors['label']);
+			formValidationError(input1, 'select', errors['sector']);
+			formValidationError(input2, 'select', errors['function']);
+			formValidationError(input3, 'select', errors['domain']);
+		}, 4000);
+
+
+		// * Une fonction pour afficher les validations
+		// * Une fonction pour clear
+		// Une fonction pour afficher les erreurs
+		// Une fonction qui regarde quand on submit
+		// Une fonction qui regarde quand on change
+		// Une fonction qui regarde quand on focus
+		// Une fonction qui sauvegarde les champs par défaut
+		// Une fonction qui met à jour les champs
+	</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from demo.models import Book
-from form.models import Indicator
+from book.models import Book
+from gain.models import Indicator
 
 
 class BookSerializer(

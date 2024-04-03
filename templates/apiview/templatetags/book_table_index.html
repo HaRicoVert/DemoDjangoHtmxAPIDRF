@@ -16,7 +16,7 @@
 			<button class="fr-btn fr-btn--secondary fr-btn--close fr-btn--sm"
 			        hx-confirm="Êtes vous sur de vouloir supprimer le livre « {{ book.title }} » ?"
 			        hx-on::response-error="alert('Erreur lors de la suppression !');"
-			        hx-delete="{% url 'book-detail' book.id %}" hx-target="closest tr" {% if perms.demo.delete_book %}disabled{% endif %} >
+			        hx-delete="{% url 'book-detail' book.id %}" hx-target="closest tr" {% if not perms.demo.delete_book %}disabled{% endif %} >
 				Supprimer
 			</button>
 		</td>

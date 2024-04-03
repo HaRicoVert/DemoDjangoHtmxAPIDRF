@@ -122,7 +122,7 @@ Le contenu de ce fichier est le suivant :
 ```python
 from rest_framework import serializers
 
-from demo.models import Book
+from book.models import Book
 
 
 class BookSerializer(
@@ -170,7 +170,7 @@ urlpatterns = [
     path(
         "books/validate-field/",
         views.BookFieldValidation.as_view(),
-        name="book-form-field-validation"
+        name="book-gain-field-validation"
     )
 ]
 

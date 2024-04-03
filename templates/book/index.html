@@ -1,0 +1,170 @@
+{% extends "dsfr/base.html" %}
+{% load static %}
+{% block extra_css %}
+	<script src="https://unpkg.com/htmx.org@1.9.10"
+	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+	        crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+	<link rel="stylesheet" href="{% static 'css/dsfr_form.css' %}">
+{% endblock %}
+{% block header %}
+	{% include 'book/block/header.html' %}
+{% endblock header %}
+{% block content %}
+	<h1>Bonjour {{ user.get_username }} !</h1>
+	<div id="loader" style="display: none;">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Chargement...</p>
+        </div>
+    </div>
+	<dialog aria-labelledby="fr-modal-title-modal-book" role="alertdialog" id="fr-modal-book" class="fr-modal">
+        <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                    <div class="fr-modal__body">
+                        <div class="fr-modal__header">
+                            <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale"
+                                    aria-controls="fr-modal-book">Fermer
+                            </button>
+                        </div>
+                        <div class="fr-modal__content">
+                            <h1 id="fr-modal-title-modal-book" class="fr-modal__title"><span
+		                            class="fr-icon-arrow-right-line fr-icon--lg"></span>Titre de la modale
+                            </h1>
+                            <div class="modal__body fr-container">
+                                <form id="bookModalForm" hx-put="{% url 'book-detail' %}" hx-swap="none">
+	                                {% csrf_token %}
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="text-input-groups-book__title">Titre
+                                            <span class="fr-hint-text">Titre du livre</span>
+                                        </label>
+                                        <input class="fr-input" type="text" id="text-input-groups-book__title"
+                                               name="text-input-book__title">
+                                    </div>
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="text-input-groups-book__author">Prénom
+                                            <span class="fr-hint-text">Prénom de l'auteur du livre</span>
+                                        </label>
+                                        <input class="fr-input" type="text" id="text-input-groups-book__author"
+                                               name="text-input-book__author">
+                                    </div>
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="text-input-groups-book__year">Année de parution
+                                            <span class="fr-hint-text">Année de parution du livre</span>
+                                        </label>
+                                        <input class="fr-input" type="date" id="text-input-groups-book__year"
+                                               name="text-input-book__year">
+                                    </div>
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="text-input-groups-book__pages">Nombre de pages
+                                            <span class="fr-hint-text">Nombre de pages du livre</span>
+                                        </label>
+                                        <input class="fr-input" type="number"
+                                               id="text-input-groups-book__pages"
+                                               name="text-input-book__pages">
+                                    </div>
+                                    <div class="fr-input-group">
+                                        <label class="fr-label" for="text-input-groups-book__price">Prix
+                                            <span class="fr-hint-text">Prix du livre (Optionnel)</span>
+                                        </label>
+                                        <input class="fr-input" type="number" id="text-input-groups-book__price"
+                                               name="text-input-book__price" step=".01">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+	                    <div class="fr-modal__footer">
+	                        <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+	                            <button type="submit" form="bookModalForm"
+	                                    class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">
+	                                Valider
+	                            </button>
+	                            <button class="fr-btn fr-icon-close-circle-line fr-btn--icon-left fr-btn--secondary"
+	                                    onclick="formResetDefaultValue(modalBookForm, modalBookFormDefaultValue)">
+	                                Réinitialiser
+	                            </button>
+	                        </div>
+	                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+	<button hidden="hidden" data-fr-opened="false" aria-controls="fr-modal-book"></button>
+	
+	<div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div id="book-table-index" class="fr-table" hx-get="{% url 'book_table_index' %}"
+                 hx-trigger="load, htmx:afterOnRequest"
+                 hx-target="#book-table-index tbody">
+	            <table>
+			        <caption>Tableau des livres de la BD</caption>
+			        <thead>
+			            <tr>
+			                <th scope="col">Titre</th>
+			                <th scope="col">Auteur</th>
+			                <th scope="col">Date de parution</th>
+			                <th scope="col">Nombre de pages</th>
+			                <th scope="col">Prix</th>
+				            <th scope="col">Éditeur</th>
+			                <th scope="col">Suppression</th>
+			            </tr>
+			        </thead>
+			        <tbody></tbody>
+			    </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+	<script src="{% static 'js/formReset.js' %}"></script>
+	<script src="{% static 'js/formSubmitEventListener.js' %}"></script>
+	<script src="{% static 'js/formUpdateInputFieldsValue.js' %}"></script>
+	<script src="{% static 'js/formValidationEventListener.js' %}"></script>
+	<script defer>
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const apiUrlBookFormFieldValidation = "{% url 'book-gain-field-validation' %}";
+		
+		const modalBook = document.getElementById('fr-modal-book');
+		const modalBookForm = document.getElementById('bookModalForm');
+		var modalBookFormDefaultValue = {};
+
+		document.body.addEventListener('htmx:configRequest', function (event) {
+			if (event.detail.verb !== 'get') {
+				event.detail.headers['X-CSRFToken'] = csrfToken;
+			}
+		});
+
+		/*
+		 * Fonction qui permet de récupérer les données d'un livre et de les afficher dans la modale
+		 * @param {Object} event - Événement déclenché par le clic sur un bouton
+		 * @returns {Promise<void>}
+		 * @constructor
+		 */
+		function showBookModalAndUpdateInputFields(event) {
+			// On écoute récupère l'attribut hx-get du bouton sur lequel on a cliqué
+			fetch(event.target.getAttribute('hx-get'))
+					.then(response => response.text())
+					// On récupère les données du livre
+					.then(data => {
+						// On met à jour les champs du formulaire avec les données du livre
+						formUpdateInputFieldsValue(modalBookForm, JSON.parse(data));
+						// On enlève les anciennes erreurs ou validations du formulaire
+						modalBookForm.querySelectorAll('.fr-input-group').forEach(
+								divInputGroup => formValidationClear(divInputGroup)
+						);
+						// On sauvegarde nous-mêmes les nouvelles valeurs par défaut du formulaire pour
+						formSaveDefaultValue(modalBookForm, JSON.parse(data));
+						// On affiche la modale
+						dsfr(modalBook).modal.disclose();
+					})
+					// Si une erreur se produit, on l'affiche dans la console
+					.catch(error => console.error("Une erreur s'est produite : ", error));
+		}
+
+		formSubmitEventListener(modalBookForm);
+		formValidationEventListener(modalBookForm, apiUrlBookFormFieldValidation, csrfToken);
+	</script>
+{% endblock %}

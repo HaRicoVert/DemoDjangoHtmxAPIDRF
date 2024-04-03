@@ -11,7 +11,7 @@ class HasViewPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_book'
+                'book.view_book'
             )
         return False
 
@@ -26,7 +26,7 @@ class HasViewHachettePermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_hachette_book'
+                'book.view_hachette_book'
             )
         return False
 
@@ -41,7 +41,7 @@ class HasViewFlammarionPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_flammarion_book'
+                'book.view_flammarion_book'
             )
         return False
 
@@ -56,7 +56,7 @@ class HasViewAlbinMichelPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_albin_michel_book'
+                'book.view_albin_michel_book'
             )
         return False
 
@@ -71,7 +71,7 @@ class HasViewGallimardPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_gallimard_book'
+                'book.view_gallimard_book'
             )
         return False
 
@@ -86,7 +86,7 @@ class HasViewLeLivreDePochePermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_le_livre_de_poche_book'
+                'book.view_le_livre_de_poche_book'
             )
         return False
 
@@ -101,7 +101,7 @@ class HasViewRobertLaffontPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_robert_laffont_book'
+                'book.view_robert_laffont_book'
             )
         return False
 
@@ -116,7 +116,7 @@ class HasViewJaiLuPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_j_ai_lu_book'
+                'book.view_j_ai_lu_book'
             )
         return False
 
@@ -131,6 +131,6 @@ class HasViewFayardPermission(
     ):
         if request.method == 'GET' and request.user and request.user.is_authenticated:
             return request.user.has_perm(
-                'demo.view_fayard_book'
+                'book.view_fayard_book'
             )
         return False

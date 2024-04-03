@@ -18,8 +18,8 @@ from api.serializers import (
     BookSerializer,
     IndicatorSerializer,
 )
-from demo.models import Book
-from form.models import Indicator
+from book.models import Book
+from gain.models import Indicator
 
 
 class BookList(
@@ -43,14 +43,14 @@ class BookList(
             )
 
         permission_to_publisher = {
-            'demo.view_hachette_book':          'A',
-            'demo.view_flammarion_book':        'B',
-            'demo.view_albin_michel_book':      'C',
-            'demo.view_gallimard_book':         'D',
-            'demo.view_le_livre_de_poche_book': 'E',
-            'demo.view_robert_laffont_book':    'F',
-            'demo.view_j_ai_lu_book':           'G',
-            'demo.view_fayard_book':            'H'
+            'book.view_hachette_book':          'A',
+            'book.view_flammarion_book':        'B',
+            'book.view_albin_michel_book':      'C',
+            'book.view_gallimard_book':         'D',
+            'book.view_le_livre_de_poche_book': 'E',
+            'book.view_robert_laffont_book':    'F',
+            'book.view_j_ai_lu_book':           'G',
+            'book.view_fayard_book':            'H'
         }
 
         # Initialiser une liste vide pour stocker les éditeurs autorisés
@@ -97,8 +97,16 @@ class BookList(
                 status=status.HTTP_201_CREATED
             )
         else:
-            errors = {}
-            if errors:
+            # Si le sérialiseur a été utilisé avec many=True, les erreurs seront dans une liste
+            if many:
+                errors = serializer.errors
+                # Vous pourriez vouloir transformer les erreurs ici si nécessaire
+                return Response(
+                    errors,
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY
+                )
+            else:
+                errors = {}
                 for key in serializer.errors.keys():
                     errors[key] = str(
                         serializer.errors[key][0]
