@@ -32,8 +32,4 @@ def logout_view(
 class CustomLoginView(
     LoginView
 ):
-    template_name = 'book/login.html'
-    redirect_authenticated_user = True
-    success_url = reverse_lazy(
-        'home'
-    )
+    template_name = 'admin/login.html'

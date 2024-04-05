@@ -1,3 +1,5 @@
+from time import sleep
+
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -13,6 +15,7 @@ from api.permissions import (
     HasViewRobertLaffontPermission,
     HasViewJaiLuPermission,
     HasViewFayardPermission,
+    HasCreateIndicatorPermission,
 )
 from api.serializers import (
     BookSerializer,
@@ -97,10 +100,8 @@ class BookList(
                 status=status.HTTP_201_CREATED
             )
         else:
-            # Si le sérialiseur a été utilisé avec many=True, les erreurs seront dans une liste
             if many:
                 errors = serializer.errors
-                # Vous pourriez vouloir transformer les erreurs ici si nécessaire
                 return Response(
                     errors,
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -224,6 +225,8 @@ class BookFieldValidation(
 class IndicatorList(
     APIView
 ):
+    permission_classes = [IsAdminUser | HasCreateIndicatorPermission]
+
     def get(
         self,
         request,

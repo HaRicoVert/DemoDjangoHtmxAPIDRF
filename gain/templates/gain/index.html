@@ -1,0 +1,182 @@
+{% extends "dsfr/base.html" %}
+{% load dsfr_tags %}
+{% load static %}
+{% block extra_css %}
+	<script src="https://unpkg.com/htmx.org@1.9.10"
+	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+	        crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+	<link rel="stylesheet" href="{% static 'css/dsfr_form.css' %}">
+{% endblock %}
+{% block header %}
+	{% include 'book/block/header.html' %}
+{% endblock header %}
+{% block content %}
+	<div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center"
+             style="display: flex; flex-direction: column; align-items: center;">
+	        <form id="indicatorForm" hx-post="{% url 'gain-list' %}" hx-swap="none">
+	        {% csrf_token %}
+	            <div class="fr-table fr-table--layout-fixed">
+		            <table>
+				        <caption>Tableau d'exemple GAIN 2.0</caption>
+				        <thead>
+				            <tr>
+				                <th scope="colgroup" colspan="4" style="text-align: center">Entité: ANDORRE</th>
+				            </tr>
+				        </thead>
+			            <tbody>
+					        <tr>
+						        <th scope="row">Domaine / Filière / Fonction</th>
+				                <td>
+					                {% dsfr_form_field form.domain %}
+				                </td>
+				                <td>
+					                {% dsfr_form_field form.sector %}
+				                </td>
+				                <td>
+					                {% dsfr_form_field form.function %}
+						        </td>
+			                </tr>
+			            <tr>
+				            <th scope="row">Point clé de performance</th>
+				            <td colspan="2">Je sais plus ce qui était écrit</td>
+				            <td><span class="fr-icon-error-line" aria-hidden="true"></span></td>
+			            </tr>
+			            </tbody>
+				    </table>
+	            </div>
+		        <div class="fr-table fr-table--no-caption fr-table--layout-fixed">
+		            <table>
+				        <caption>Tableau d'exemple GAIN 2.0</caption>
+				        <thead></thead>
+			            <tbody>
+					        <tr>
+						        <th scope="row" colspan="1">Libellée</th>
+				                <td colspan="3">
+					                {% dsfr_form_field form.label %}
+					                <div style="/*noinspection CssInvalidPropertyValue*/width: -webkit-fill-available">
+						                {% dsfr_form_field form.indicator_type %}
+					                </div>
+				                </td>
+			                </tr>
+				            <tr>
+						        <th scope="row" colspan="1">Périodicité</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.period %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Descriptif</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.description %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Saisie détaillée</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.detailed_entry %}
+					            </td>
+				            </tr>
+				            <tr>
+					            <th scope="row" colspan="1">Formule</th>
+					            <td colspan="3">
+						            {% dsfr_form_field form.formula %}
+					            </td>
+				            </tr>
+			            </tbody>
+				    </table>
+	            </div>
+	            <button type="submit" class="fr-btn fr-btn--secondary">Valider</button>
+	        </form>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+	<script src="{% static 'js/new-js/htmxFormEventListenerCsrf.js' %}"></script>
+	<script src="{% static 'js/new-js/formValidation.js' %}"></script>
+	<script src="{% static 'js/new-js/formSubmitEventListener.js' %}"></script>
+	<script src="{% static 'js/new-js/formInputEventListener.js' %}"></script>
+	<script src="{% static 'js/new-js/formReset.js' %}"></script>
+	<script defer>
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const apiUrlIndicatorFormFieldValidation = "{% url 'gain-field-validation' %}";
+		const indicatorForm = document.getElementById('indicatorForm');
+
+		const formula = document.querySelector("#id_formula");
+		const detailed_entry = document.querySelector("#id_detailed_entry");
+		const description = document.querySelector("#id_description");
+		const period = document.querySelector("#id_period");
+		const typeIndicator = document.querySelector("#id_indicator_type");
+		const label = document.querySelector("#id_label");
+		const domain = document.querySelector("#id_domain");
+		const sector = document.querySelector("#id_sector");
+		const fonction = document.querySelector("#id_function");
+		
+		formula.value = "FORMULA";
+		formula.required = false;
+		detailed_entry.checked = true;
+		description.value = "DESCRIPTION";
+		period.value = "1";
+		typeIndicator.value = "1";
+		label.value = (Math.floor(Math.random() * (1000 - 1 + 1)) + 1).toString();
+		domain.value = "1";
+		sector.value = "3";
+		fonction.value = "2";
+
+		function indicatorFormSubmitSuccess(event) {
+			const main = document.querySelector('main');
+			const divSuccess = document.createElement('div');
+			const divSuccessTitle = document.createElement('h3');
+			const divSuccessDescription = document.createElement('p');
+			const divSuccessCloseButton = document.createElement('button');
+			divSuccess.classList.add('fr-alert', 'fr-alert--success');
+			divSuccessTitle.classList.add('fr-alert__title');
+			divSuccessTitle.innerText = "Indicateur enregistré avec succès";
+			divSuccessDescription.innerText = `L'indicateur ${event.detail.requestConfig.parameters.label} a bien été enregistré`;
+			divSuccessCloseButton.classList.add('fr-btn--close', 'fr-btn');
+			divSuccessCloseButton.title = "Masquer le message";
+			divSuccessCloseButton.onclick = () => divSuccess.remove();
+			divSuccessCloseButton.innerHTML = "Masquer le message";
+			divSuccess.appendChild(divSuccessTitle);
+			divSuccess.appendChild(divSuccessDescription);
+			divSuccess.appendChild(divSuccessCloseButton);
+			main.prepend(divSuccess);
+			main.querySelector('.fr-alert--success').scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+				inline: "nearest"
+			});
+			formReset(indicatorForm);
+		}
+
+		function indicatorFormSubmitError(event) {
+			const main = document.querySelector('main');
+			const divError = document.createElement('div');
+			const divErrorTitle = document.createElement('h3');
+			const divErrorDescription = document.createElement('p');
+			const divErrorCloseButton = document.createElement('button');
+			divError.classList.add('fr-alert', 'fr-alert--error');
+			divErrorTitle.classList.add('fr-alert__title');
+			divErrorTitle.innerText = "Une erreur est survenue";
+			divErrorDescription.innerHTML = `L'indicateur ${event.detail.requestConfig.parameters.label} n'a pas pu être enregistré, veuillez réessayer plus tard ou contacter un administrateur si le problème persiste.<br><strong><u>Erreur: ${JSON.parse(event.detail.xhr.responseText).detail}</u></strong>`;
+			divErrorCloseButton.classList.add('fr-btn--close', 'fr-btn');
+			divErrorCloseButton.title = "Masquer le message";
+			divErrorCloseButton.onclick = () => divError.remove();
+			divErrorCloseButton.innerHTML = "Masquer le message";
+			divError.appendChild(divErrorTitle);
+			divError.appendChild(divErrorDescription);
+			divError.appendChild(divErrorCloseButton);
+			main.prepend(divError);
+			main.querySelector('.fr-alert--error').scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+				inline: "nearest"
+			});
+		}
+
+		formSubmitEventListener(indicatorForm, indicatorFormSubmitSuccess, indicatorFormSubmitError);
+		formInputAddEventListener(indicatorForm, apiUrlIndicatorFormFieldValidation, csrfToken);
+	</script>
+{% endblock %}

@@ -1,17 +1,30 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from gain.forms import IndicatorForm
 
 
-# Create your views here.
+@login_required()
 def form(
     request
 ):
-    indicator_form = IndicatorForm()
     return render(
         request,
-        'gain/form.html',
+        'gain/index.html',
         context={
-            'gain': indicator_form
+            'form': IndicatorForm()
+        }
+    )
+
+
+@login_required()
+def form_separated(
+    request
+):
+    return render(
+        request,
+        'gain/index_separated.html',
+        context={
+            'form': IndicatorForm()
         }
     )

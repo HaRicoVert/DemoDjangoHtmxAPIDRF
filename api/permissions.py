@@ -134,3 +134,18 @@ class HasViewFayardPermission(
                 'book.view_fayard_book'
             )
         return False
+
+
+class HasCreateIndicatorPermission(
+    BasePermission
+):
+    def has_permission(
+        self,
+        request,
+        view
+    ):
+        if request.method == 'POST' and request.user and request.user.is_authenticated:
+            return request.user.has_perm(
+                'gain.add_indicator'
+            )
+        return False

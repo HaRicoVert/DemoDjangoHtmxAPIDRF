@@ -16,22 +16,35 @@ application web en utilisant le framework Django, avec une API Django Rest Frame
             <a href="">Installation</a>
         </li>
         <li>
-            <a href="">Django</a>
-        </li>
-        <li>
-			<a href="">L'API Django Rest Framework</a>
-			<ul>
+            <a href="">Structure du projet</a>
+            <ul>
 				<li>
-					<a href="">Création</a>
+					<a href="">Django</a>
 				</li>
 				<li>
-					<a href="">Utilisation</a>
+					<a href="">L'API Django Rest Framework</a>
+                    <ul>
+                        <li>
+                            <a href="">Création</a>
+                        </li>
+                        <li>
+                            <a href="">Authentification</a>
+                        </li>
+                        <li>
+                            <a href="">Permissions</a>  
+                        </li>
+                    </ul>
 				</li>
+                <li>
+                    <a href="">La partie Front-End</a>
+                    <ul>
+                        <li>
+                            <a href="">L'API View</a>
+                        </li>
+                    </ul>
+                </li>
 			</ul>
         </li>
-        <li>
-			<a href="">Explication de la plateforme</a>
-		</li>
     </ol>
 </details>
 
@@ -71,58 +84,130 @@ Les principales dépendances sont les suivantes :
 - Django
 - Django Rest Framework
 - Django-DSFR
-- Django Browser Reload
 
-## Django
+## Structure du projet
+
+Le projet est structuré de la manière suivante :
+
+```
+├── api
+│   ├── __init__.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── signals.py
+│   ├── urls.py
+│   └── views.py
+├── apiview
+│   ├── __init__.py
+│   ├── apps.py
+│   ├── templates
+│   │   └── apiview
+│   │       ├── book_table_index.html
+│   │       └── templatetags
+│   │           └── book_table_index.html
+│   ├── templatetags
+│   │   ├── __init__.py
+│   │   └── apiview_tags.py
+│   ├── urls.py
+│   └── views.py
+├── book
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── static
+│   │   ├── css
+│   │   │   └── dsfr_form.css
+│   │   ├── images
+│   │   │   └── tail-spin.svg
+│   │   └── js
+│   │       ├── new-js
+│   │       │   ├── formInputEventListener.js
+│   │       │   ├── formReset.js
+│   │       │   ├── formSubmitEventListener.js
+│   │       │   ├── formValidation.js
+│   │       │   ├── htmxFormEventListenerCsrf.js
+│   │       │   └── loader.js
+│   │       └── old-js
+│   │           ├── formReset.js
+│   │           ├── formSubmitEventListener.js
+│   │           ├── formUpdateInputFieldsValue.js
+│   │           └── formValidationEventListener.js
+│   ├── templates
+│   │   └── book
+│   │       ├── block
+│   │       │   └── header.html
+│   │       └── index.html
+│   ├── urls.py
+│   ├── utilities.py
+│   └── views.py
+├── core
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── db.sqlite3
+├── gain
+│   ├── __init__.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── templates
+│   │   └── gain
+│   │       ├── index.html
+│   │       └── index_separated.html
+│   ├── urls.py
+│   └── views.py
+├── manage.py
+├── requirements.txt
+└── templates
+    └── admin
+        └── login.html
+```
+
+On va retrouver 6 dossiers principaux :
+
+- Les dossiers api, apiview, book et gain, qui correspondent aux différentes applications du projet :
+
+> `api` : Application responsable de l'API Django Rest Framework
+>
+> `apiview` : Application qui permet de gérer le retour formaté de l'API
+>
+> `book` : Application simulant la modification et la supprimant de livres d'une bibliothèque
+>
+> `gain` : Application simulant des formulaires pour la gestion d'indicateurs
+
+- Le dossier `templates` qui contient les templates liées au projet
+
+
+- Le dossier `core` qui contient les fichiers de configuration de Django
+
+### Django
 
 Pour la partie concernant l'installation et le paramétrage de Django, je vous invite à consulter la documentation, étant
-donné que le but initial de ce projet n'est pas de vous expliquer comment installer Django, mais comment utiliser une
-API Django Rest Framework.
+donné que le but initial de ce projet n'est pas de vous expliquer comment installer et utiliser Django, mais comment
+utiliser une API Django Rest Framework.
 
-## L'API Django Rest Framework
+### L'API Django Rest Framework
 
 La réalisation d'une API avec Django Rest Framework s'est faite via le tutorial disponible sur le site officiel de
 Django Rest Framework. Vous pouvez retrouver ce tutoriel à
 cette [adresse](https://www.django-rest-framework.org/tutorial/1-serialization/).
 
-L'entièreté du tutoriel n'a pas été réalisée, mais seulement les étapes nécessaires pour la réalisation de l'API pour
-l'application web. Ce projet n'exclut pas une mise à jour expliquant plus en détail les parties non réalisées de l'API.
-
-### Création
-
-Pour la réalisation de l'API, il faut d'abord avoir mis en place une application Django, avec notamment un modèle de
-base de données. Pour ce projet, j'ai utilisé un modèle de base de données pour les livres, avec un titre, un auteur,
-une année de parution et un prix. Chaque élément de ce modèle a ses propres attributs, comme le type de donnée, ou si le
-champ est obligatoire ou non. Il y a également d'autre validation, comme la validation du prix, qui ne peut pas être
-négatif (par exemple).
-
-Une fois le modèle créé et l'application principale Django fonctionnelle, la première étape est de créer d'une nouvelle
-application Django, qui sera dédiée à l'API. Pour cela, il faut utiliser la commande suivante :
-
-```bash
-python manage.py startapp api
-```
-
-Une fois l'application créée, il faut ajouter cette application dans le fichier `settings.py` de l'application
-principale Django. Pour cela, il faut ajouter le nom de l'application, ici `rest_framework` dans la
-liste `INSTALLED_APPS`, avant le lancement de l'application principale.
-
-Plusieurs fichiers vont être créés pour l'API. Les fichiers qui nous intéressent sont les
-fichiers `serializers.py`, `urls.py` et
-`views.py`.
-
 ---
 
-Le fichier `serializers.py` permet de transformer les données de la base de données en JSON, pour que l'API puisse les
-envoyer. Il permet également de déclarer les données que l'API peut recevoir pour les enregistrer dans la base de
-données.
+#### Création
 
-Le contenu de ce fichier est le suivant :
+Pour la création de l'API, la première étape est d'avoir un modèle Django fonctionnel (exemple : le modèle `Book` dans
+l'application `book`). Ensuite, il faut créer un fichier `serializers.py` dans le dossier de l'application de l'API, et
+créer un serializer pour le modèle.
 
 ```python
 from rest_framework import serializers
 
 from book.models import Book
+from gain.models import Indicator
 
 
 class BookSerializer(
@@ -130,166 +215,184 @@ class BookSerializer(
 ):
     class Meta:
         model = Book
-        fields = "__all__"
+        fields = '__all__'
+
+
+class IndicatorSerializer(
+    serializers.ModelSerializer
+):
+    class Meta:
+        model = Indicator
+        fields = '__all__'
 ```
 
-Il est semblable à la déclaration d'un formulaire de base de données en Django, avec la classe `Meta` qui permet de
-déclarer le modèle de base de données, et les champs que l'on souhaite utiliser, ici tous les champs. Je vous invite à
-suivre soit la
-[documentation officielle Django,](https://docs.djangoproject.com/fr/5.0/topics/forms/modelforms/) soit la
-[documentation officielle de Django Rest Framework](https://www.django-rest-framework.org/api-guide/serializers/) pour
-plus d'informations.
+Le but du serializer est d'indiquer à l'API DRF quel modèle utiliser, et quels champs du modèle utiliser. Ensuite, il
+faut créer une vue pour l'API, qui va utiliser le serializer pour retourner les données. Pour les vues, elles sont
+décomposées en classes, où dans chaque classe, on va définir les méthodes HTTP à utiliser pour la vue (voir le fichier
+`views.py` de l'application `api`). C'est à l'utilisateur de définir les méthodes à utiliser pour chaque vue. C'est ici,
+que l'on récupère les données du modèle, et que l'on les retourne via le serializer. Chaque vue doit être liée à une
+URL. Chaque vue renvoie un objet `Response` de Django Rest Framework, qui va retourner les données au format JSON.
+Chaque vue renvoi un code de réponse HTTP.
 
 ---
 
-Le fichier `urls.py` permet de déclarer les différentes routes de l'API. Il permet de déclarer les différentes vues
-disponibles pour l'API. Le contenu de ce fichier est le suivant :
+#### Authentification
+
+Pour l'authentification, Django Rest Framework propose plusieurs méthodes d'authentification. On peut définir une
+authentification par défaut pour toutes les vues depuis les paramètres du fichier `settings.py` de l'application `core`.
 
 ```python
-from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
-
-from api import views
-
-urlpatterns = [
-    path(
-        "books/",
-        views.BookList.as_view(),
-        name="book-list"
-    ),
-    path(
-        "book/",
-        views.BookDetail.as_view(),
-        name="book-detail"
-    ),
-    path(
-        "book/<int:book_id>/",
-        views.BookDetail.as_view(),
-        name="book-detail"
-    ),
-    path(
-        "books/validate-field/",
-        views.BookFieldValidation.as_view(),
-        name="book-gain-field-validation"
-    )
-]
-
-urlpatterns = format_suffix_patterns(
-    urlpatterns
-)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.SessionAuthentication',
+                                       'rest_framework.authentication.TokenAuthentication', ]
+}
 ```
 
-Concernant le choix des routes, il est possible de les déclarer de différentes manières, avec des paramètres, ou non.
-J'ai essayé de respecter les bonnes pratiques pour la déclaration des routes, mais il est possible que certaines routes
-ne soient pas optimales. J'ai essayé de faire une API plus ou moins RESTful.
+Ainsi chaque vue de l'API va vérifier si l'utilisateur est authentifié via une session ou un token. On peut également
+définir des authentifications au niveau de chaque vue avec le code ci-dessous.
 
-Une nouvelle fois, je vous invite à consulter, soit
-la [documentation officielle de Django](https://docs.djangoproject.com/fr/5.0/topics/http/urls/), soit la
-[documentation officielle de Django Rest Framework](https://www.django-rest-framework.org/tutorial/1-serialization/#writing-regular-django-views-using-our-serializer)
-pour plus d'informations.
+```python
+class BookList(
+    APIView
+):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
-À noter, que l'on appelle les vues de l'API, qui sont déclarées dans le fichier `views.py`, via la méthode `as_view()`.
+    def get(
+        self,
+        request,
+        format=None
+    ):
+        ...
+```
 
-La dernière ligne permet de déclarer les différentes extensions de fichier que l'API peut recevoir. Par exemple, si
-l'API peut recevoir des fichiers JSON, XML, ou autre (dans notre seul le JSON a été utilisé / testé).
+Les sessions et les tokens sont des méthodes d'authentification par défaut de Django Rest Framework.
 
-*Attention* : Il faut également ajouter les routes de l'API dans le fichier `urls.py` de l'application principale
-Django, pour que l'API soit accessible. Pour cela, il faut ajouter les routes de l'API dans le fichier `urls.py` de
-l'application principale Django, via la méthode `include()`. Pour plus d'informations, je vous invite à consulter
-la [documentation officielle de Django Rest Framework](https://www.django-rest-framework.org/tutorial/1-serialization/#writing-regular-django-views-using-our-serializer).
+Les sessions sont des cookies qui permettent de stocker des informations sur le serveur. Cette méthode
+d'authentification est surtout utilisé pour l'authentification coté Web.
 
+Les tokens sont des jetons qui permettent de stocker des informations sur le client. Cette méthode d'authentification
+est surtout utilisé pour l'authentification cotée API (via CLI par exemple ou pour les requêtes AJAX).
+
+Pour les Tokens, il faut ajouter `rest_framework.authtoken` dans les `INSTALLED_APPS` du fichier `settings.py` de
+l'application `core`.
+
+Ensuite, on utilise un signal dès qu'un utilisateur est créé pour lui générer un token.
+
+```python
+# api/signals.py
+
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+
+@receiver(
+    user_logged_in
+)
+def create_auth_token(
+    sender,
+    user,
+    request,
+    **kwargs
+):
+    Token.objects.get_or_create(
+        user=user
+    )
+```
+
+Il faut ensuite ajouter le signal dans le fichier `apps.py` de l'application `book`.
+
+```python
+def ready(
+    self
+):
+    import api.signals
+```
+
+Pour créer un token via CLI, il faut utiliser la commande suivante :
+
+```bash
+curl -X POST -d "username=<username>&password=<password>" http://localhost:8000/apiDRF/token/
+```
+
+Pour utiliser le token, il faut ajouter le token dans le header de la requête.
+
+```bash
+curl -H "Authorization: Token <token>" http://localhost:8000/apiDRF/books/
+````
 ---
 
-Et enfin, le fichier `views.py` permet de déclarer les différentes vues de l'API. Il permet de déclarer les différentes
-actions que l'API peut réaliser, comme la récupération de données, la modification de données, ou la suppression de
-données.
+#### Permissions
 
-C'est ce fichier qui gère la logique de l'API. Je vous laisse suivre
-la [documentation officielle de Django Rest Framework](https://www.django-rest-framework.org/api-guide/views/) pour plus
-d'informations étant donné que le contenu de ce fichier est assez conséquent.
+Pour la gestion des permissions, Django Rest Framework propose plusieurs permissions par défaut. On peut définir des
+permissions par défaut pour toutes les vues depuis les paramètres du fichier `settings.py` de l'application `core`.
 
-Le principe de ce fichier reste le même que les propriétés de base de données de Django, avec des vues qui héritent de
-classes de Django Rest Framework, et qui déclarent les différentes actions que l'API peut réaliser. La manière de
-traiter les données est plus ou moins semblables à la manière de traiter les données dans les propriétés du modèle de
-base de données.
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',
+                                   'rest_framework.permissions.IsAdminUser', ]
+}
+```
 
-Chaque vue déclare les différentes actions que l'API peut réaliser, comme la récupération de données, la modification de
-données, ou la suppression de données. Chaque vue déclare également les différentes méthodes HTTP que l'API peut
-recevoir, comme GET, POST, PUT, DELETE, etc. Chaque vue renvoi toujours une réponse, que ce soit un message de succès,
-ou un message d'erreur. Le contenu renvoyé est toujours en JSON, il n'est pas forcément rempli, mais il est toujours
-présent. Les codes HTTP sont aussi renvoyés, pour indiquer si la requête a été un succès, ou non. Je vous invite à vous
-renseigner sur les codes HTTP pour plus d'informations via
-la [documentation officielle de Mozilla](https://developer.mozilla.org/fr/docs/Web/HTTP/Status).
+Ainsi chaque vue de l'API va vérifier si l'utilisateur est authentifié, et si l'utilisateur est un administrateur.
 
-### Utilisation
+On peut également définir des permissions au niveau de chaque vue. Pour cela, il faut définir des permissions Django qui
+seront utilisées par les vues. Une fois les permissions Django créées, il faut aussi définir les permissions DRF, qui
+seront utilisées par les vues. C'est à l'utilisateur de développer les permissions nécessaires pour son application,
+voir ci-dessous.
 
-Pour utiliser l'API, il faut d'abord lancer l'application Django. Ensuite, vous pouvez utiliser l'interface proposée par
-Django Rest Framework pour tester l'API. Vous pouvez y accéder via l'URL de l'API, par exemple, dans notre cas :
-`http://localhost:8000/apiDRF/books/`.
+```python
+# Exemple d'une permission DRF pour vérifier si l'utilisateur à le droit de voir les livres de l'éditeur Hachette
 
-L'interface vous permet de tester les différentes routes de l'API, et de voir les réponses renvoyées par l'API. Vous
-pouvez également tester les différentes méthodes HTTP, comme GET, POST, PUT, DELETE, etc.
+class HasViewHachettePermission(
+    BasePermission
+):
+    def has_permission(
+        self,
+        request,
+        view
+    ):
+        if request.method == 'GET' and request.user and request.user.is_authenticated:
+            return request.user.has_perm(
+                'book.view_hachette_book'
+            )
+        return False
+```
 
-## Explication de la plateforme
+Pour appliquer la permission à une vue, il suffit de l'ajouter dans la liste des permissions de la vue.
 
-La plateforme est une application web basique, qui permet de visualiser, modifier et supprimer des livres. Elle est
-composée d'une page principale, qui liste tous les livres de la base de données via un tableau. Chaque ligne du tableau
-correspond à un livre, avec les différentes informations du livre. Il est possible de supprimer un live via le bouton
-"Supprimer". Pour modifier les données d'un livre, il suffit de cliquer sur la ligne correspondante, et de modifier les
-données dans le formulaire qui apparaît.
+```python
+class BookList(
+    APIView
+):
+    permission_classes = [
+        IsAdminUser | HasViewPermission | HasViewHachettePermission]
 
-Pour l'interactivité de la page, j'ai utilisé la librairie htmx, qui permet de créer des pages web dynamiques. J'ai
-utilisé cette librairie pour la modification et la suppression des livres. Je vous invite fortement à consulter
-la [documentation officielle de htmx](https://htmx.org/) pour plus d'informations, l'utilisation de la librairie est
-assez vaste et complexe, bien que simple à utiliser une fois habitué.
+    def get(
+        self,
+        request,
+        format=None
+    ):
+        ...
+```
 
-### Explication de la logique de développement
+On peut utiliser les opérateurs | et & pour combiner les permissions.
 
----
+Si l'on utilise des vues pour renvoyer des données formatées, il est possible de définir des permissions pour ces vues
+en utilisant les décorateurs `@login_required` et `@permission_required`.
 
-### Fonctionnement du tableau HTML
+```python
+@login_required
+@permission_required(
+    'book.view_book',
+    raise_exception=True
+)
+def book_table_index(
+    request
+):
+    ...
+```
 
-La première étape pour a été de réaliser une troisième application Django, qui sera dédiée à l'interface web. Je l'ai
-nommée `apiview` car je l'utilise en tant qu'API, mais qui renvoi une vue HTML, plutôt qu'une API REST, au format JSON.
-Cette application se connecte à l'API Django Rest Framework pour récupérer les données de la base de données, et utilise
-un custom inclusion_tag pour générer le tableau HTML. Ce tableau a été pensé pour être à utiliser uniquement pour la
-page d'accueil, une éventuelle modification permettrait de l'utiliser pour d'autres pages, à la condition de garder la
-même logique d'utilisation. Le but d'utiliser cette approche est de pouvoir faire une requête AJAX via HTMX pour
-rafraîchir le tableau sans recharger la page.
-
----
-
-### Fonctionnement de l'ouverture de la modale de modification
-
-La deuxième étape a été de réaliser une modale pour la modification des livres. J'ai utilisé la librairie htmx pour
-ouvrir la modale, et pour envoyer les données du formulaire de la modale à l'API. La modale s'ouvre via un clic sur une
-ligne du tableau, et se ferme via un clic sur le bouton "Fermer" de la modale. Pour cela, j'ai utilisé
-l'attribut `onclick` et l'attribut `hx-get` avec le lien vers la vue de l'API JSON qui renvoi les données du livre à
-modifier. L'attribut `hx-swap` avec la valeur `none`permet d'empêcher la modification de la page à la suite de la
-requête AJAX. Enfin, l'attribut `onclick` éxécute la fonction JS `showBookModalAndUpdateInputFields()` pour ouvrir la
-modale. Cette fonction permet de récupérer les valeurs de la requête AJAX, et de les insérer dans les champs du
-formulaire de la modale et d'ouvrir la modale via l'API du DSFR. Je vous invite à consulter le code de la
-fonction `showBookModalAndUpdateInputFields()` pour plus d'informations.
-
----
-
-### Fonctionnement de la validation du formulaire
-
-La troisième étape a été de réaliser la validation du formulaire. J'utilise la fonction
-JS `formValidationEventListener()`
-pour vérifier si les champs sont conformes aux contraintes de la base de données. Cette fonction est appelée à chaque
-modification d'un champ du formulaire. Elle vérifie si les champs sont conformes en envoyant une requête AJAX à l'API.
-La fonction regarde la réponse de l'API, et affiche un message d'erreur si la réponse est un message d'erreur. Si la
-réponse est un code HTTP 200, alors le message d'erreur est supprimé. Je vous invite à consulter le code de la
-fonction `formValidationEventListener()` pour plus d'informations.
-
----
-
-### Fonctionnement de la suppression d'un livre
-
-La quatrième étape a été de réaliser la suppression d'un livre. J'utilise l'attribut `hx-delete` pour envoyer une
-requête AJAX à l'API pour supprimer un livre. L'attribut `hx-confirm` permet d'afficher une boîte de dialogue pour
-confirmer la suppression du livre. L'attribut `hx-on::response-error` permet d'afficher un message d'erreur si la
-suppression du livre a échoué. Enfin, on utilise l'attribut `hx-target` pour supprimer la ligne du tableau correspondant
-au livre supprimé. Je vous invite à consulter le code HTML, qui se trouve dans l'HTML de l'inclusion_tag, pour plus
-d'informations.
+À noter qu'ici, on utilise les permissions Django, et non les permissions DRF. On vérifie seulement si l'utilisateur a
+le droit de voir les livres. Pour gérer ensuite, les permissions de voir en fonction des éditeurs, c'est l'API qui le
+gère.

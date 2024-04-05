@@ -4,8 +4,6 @@
 	<script src="https://unpkg.com/htmx.org@1.9.10"
 	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
 	        crossorigin="anonymous"></script>
-	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
-	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
 	<link rel="stylesheet" href="{% static 'css/dsfr_form.css' %}">
 {% endblock %}
 {% block header %}
@@ -13,12 +11,6 @@
 {% endblock header %}
 {% block content %}
 	<h1>Bonjour {{ user.get_username }} !</h1>
-	<div id="loader" style="display: none;">
-        <div class="loader-content">
-            <div class="loader-spinner"></div>
-            <p>Chargement...</p>
-        </div>
-    </div>
 	<dialog aria-labelledby="fr-modal-title-modal-book" role="alertdialog" id="fr-modal-book" class="fr-modal">
         <div class="fr-container fr-container--fluid fr-container-md">
             <div class="fr-grid-row fr-grid-row--center">
@@ -93,12 +85,11 @@
         </div>
     </dialog>
 	<button hidden="hidden" data-fr-opened="false" aria-controls="fr-modal-book"></button>
-	
 	<div class="fr-container">
         <div class="fr-grid-row fr-grid-row--center">
             <div id="book-table-index" class="fr-table" hx-get="{% url 'book_table_index' %}"
                  hx-trigger="load, htmx:afterOnRequest"
-                 hx-target="#book-table-index tbody">
+                 hx-target="#book-table-index tbody" hx-indicator="#loader">
 	            <table>
 			        <caption>Tableau des livres de la BD</caption>
 			        <thead>
@@ -119,17 +110,18 @@
     </div>
 {% endblock %}
 {% block extra_js %}
-	<script src="{% static 'js/formReset.js' %}"></script>
-	<script src="{% static 'js/formSubmitEventListener.js' %}"></script>
-	<script src="{% static 'js/formUpdateInputFieldsValue.js' %}"></script>
-	<script src="{% static 'js/formValidationEventListener.js' %}"></script>
+	<script src="{% static 'js/old-js/formReset.js' %}"></script>
+	<script src="{% static 'js/old-js/formSubmitEventListener.js' %}"></script>
+	<script src="{% static 'js/old-js/formUpdateInputFieldsValue.js' %}"></script>
+	<script src="{% static 'js/old-js/formValidationEventListener.js' %}"></script>
+	<script src="{% static 'js/new-js/loader.js' %}"></script>
 	<script defer>
 		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 		const apiUrlBookFormFieldValidation = "{% url 'book-gain-field-validation' %}";
 		
 		const modalBook = document.getElementById('fr-modal-book');
 		const modalBookForm = document.getElementById('bookModalForm');
-		var modalBookFormDefaultValue = {};
+		let modalBookFormDefaultValue = {};
 
 		document.body.addEventListener('htmx:configRequest', function (event) {
 			if (event.detail.verb !== 'get') {

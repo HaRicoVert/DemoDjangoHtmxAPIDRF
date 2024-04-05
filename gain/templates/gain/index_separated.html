@@ -1,0 +1,245 @@
+{% extends "dsfr/base.html" %}
+{% load dsfr_tags %}
+{% load static %}
+{% block extra_css %}
+	<script src="https://unpkg.com/htmx.org@1.9.10"
+	        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+	        crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+	<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+	<link rel="stylesheet" href="{% static 'css/dsfr_form.css' %}">
+{% endblock %}
+{% block header %}
+	{% include 'book/block/header.html' %}
+{% endblock header %}
+{% block content %}
+	<div class="fr-container">
+		<div class="fr-grid-row">
+			<div class="fr-col-md-4">
+				<nav class="fr-sidemenu" aria-labelledby="fr-sidemenu-title">
+				    <div class="fr-sidemenu__inner">
+				        <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper"
+				                aria-expanded="false">
+				            Dans cette rubrique
+				        </button>
+				        <div class="fr-collapse" id="fr-sidemenu-wrapper">
+				            <div class="fr-sidemenu__title" id="fr-sidemenu-title">Lien rapide de formulaire</div>
+				            <ul class="fr-sidemenu__list">
+				                <li class="fr-sidemenu__item fr-sidemenu__item--active">
+				                    <a class="fr-sidemenu__link" href="{% url 'gain_separated' %}" target="_self"
+				                       aria-current="page">Ajout d'un indicateur</a>
+				                </li>
+				                <li class="fr-sidemenu__item">
+				                    <a class="fr-sidemenu__link" href="https://fr.wikipedia.org/wiki/Entit%C3%A9" target="_self">Ajout d'une entité</a>
+				                </li>
+				            </ul>
+				        </div>
+				    </div>
+				</nav>
+			</div>
+			<div class="fr-col">
+				<form id="indicatorForm" hx-post="{% url 'gain-list' %}" hx-swap="none"
+				      hx-trigger="click from:#submit-indicator-form">
+	            {% csrf_token %}
+		        <div style="padding: 50px;">
+			        <div class="fr-col">
+						{% dsfr_form_field form.domain %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.sector %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.function %}
+					</div>
+					<button style="margin-top: 10px;" type="button" id="go-to-form-2" class="fr-btn fr-btn--secondary">On va vers le 2</button>
+		        </div>
+		        <div hidden style="padding: 50px;">
+			        <div class="fr-col">
+						{% dsfr_form_field form.label %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.indicator_type %}
+					</div>
+			        <div style="margin-top: 10px; display: flex; align-items: end;">
+				        <button style="margin-right: 10px;" type="button"
+				                class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-go-back-fill"
+				                onclick="goToForm1()">Revenir en arrière</button>
+						<button type="button" id="go-to-form-3"
+						        class="fr-btn">On va vers le 3</button>
+			        </div>
+		        </div>
+		        <div hidden style="padding: 50px;">
+			        <div class="fr-col">
+						{% dsfr_form_field form.period %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.description %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.detailed_entry %}
+					</div>
+					<div class="fr-col">
+						{% dsfr_form_field form.formula %}
+					</div>
+			        <div style="margin-top: 10px; display: flex; align-items: end;">
+				        <button style="margin-right: 10px;" type="button"
+				                class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-go-back-fill"
+				                onclick="goToForm2()">Revenir en arrière</button>
+						<button type="button" form="indicatorForm" id="submit-indicator-form"
+						        class="fr-btn">Envoyer</button>
+			        </div>
+		        </div>
+	        </form>
+			</div>
+		</div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+	<script src="{% static 'js/new-js/htmxFormEventListenerCsrf.js' %}"></script>
+	<script src="{% static 'js/new-js/formValidation.js' %}"></script>
+	<script src="{% static 'js/new-js/formInputEventListener.js' %}"></script>
+	<script src="{% static 'js/new-js/formSubmitEventListener.js' %}"></script>
+	<script src="{% static 'js/new-js/formReset.js' %}"></script>
+	<script defer>
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const apiUrlIndicatorFormFieldValidation = "{% url 'gain-field-validation' %}";
+		const indicatorForm = document.getElementById('indicatorForm');
+		const goToForm2Button = document.getElementById('go-to-form-2');
+		const goToForm3Button = document.getElementById('go-to-form-3');
+
+		function goToForm1() {
+			document.querySelector("#indicatorForm > div:nth-child(2)").hidden = false;
+			document.querySelector("#indicatorForm > div:nth-child(3)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(4)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(3)").scrollIntoView({
+				behavior: "smooth", block: "start", inline: "start"
+			});
+		}
+
+		function goToForm2() {
+			document.querySelector("#indicatorForm > div:nth-child(2)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(3)").hidden = false;
+			document.querySelector("#indicatorForm > div:nth-child(4)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(3)").scrollIntoView({
+				behavior: "smooth", block: "start", inline: "start"
+			});
+		}
+
+		function goToForm3() {
+			document.querySelector("#indicatorForm > div:nth-child(2)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(3)").hidden = true;
+			document.querySelector("#indicatorForm > div:nth-child(4)").hidden = false;
+			document.querySelector("#indicatorForm > div:nth-child(4)").scrollIntoView({
+				behavior: "smooth", block: "start", inline: "start"
+			});
+		}
+
+		goToForm2Button.addEventListener('click', () => {
+			const formBody = JSON.stringify({
+				'domain': indicatorForm.domain.value,
+				'sector': indicatorForm.sector.value,
+				'function': indicatorForm.function.value
+			});
+
+			const httpRequest = new XMLHttpRequest();
+			httpRequest.open('POST', apiUrlIndicatorFormFieldValidation);
+			httpRequest.setRequestHeader('Content-Type', 'application/json');
+			httpRequest.setRequestHeader('X-CSRFToken', csrfToken);
+			httpRequest.send(formBody);
+
+			httpRequest.onreadystatechange = function () {
+				if (httpRequest.readyState === httpRequest.DONE) {
+					if (httpRequest.status === 200) {
+						goToForm2();
+					} else if (httpRequest.status === 422) {
+						for (const [error, value] of Object.entries(JSON.parse(httpRequest.responseText))) {
+							formValidation(indicatorForm.querySelector(`[name=${error}]`), value);
+						}
+						indicatorForm.querySelector('.fr-error-text, .fr-message--error').scrollIntoView({
+							behavior: "smooth", block: "center", inline: "nearest"
+						});
+					}
+				}
+			}
+		});
+
+		goToForm3Button.addEventListener('click', () => {
+			const formBody = JSON.stringify({
+				'label': indicatorForm.label.value,
+				'indicator_type': indicatorForm.indicator_type.value
+			});
+
+			const httpRequest = new XMLHttpRequest();
+			httpRequest.open('POST', apiUrlIndicatorFormFieldValidation);
+			httpRequest.setRequestHeader('Content-Type', 'application/json');
+			httpRequest.setRequestHeader('X-CSRFToken', csrfToken);
+			httpRequest.send(formBody);
+
+			httpRequest.onreadystatechange = function () {
+				if (httpRequest.readyState === httpRequest.DONE) {
+					if (httpRequest.status === 200) {
+						goToForm3();
+					} else if (httpRequest.status === 422) {
+						for (const [error, value] of Object.entries(JSON.parse(httpRequest.responseText))) {
+							formValidation(indicatorForm.querySelector(`[name=${error}]`), value);
+						}
+						indicatorForm.querySelector('.fr-error-text, .fr-message--error').scrollIntoView({
+							behavior: "smooth", block: "center", inline: "nearest"
+						});
+					}
+				}
+			}
+		});
+
+		function indicatorFormSubmitSuccess(event) {
+			const main = document.querySelector('main');
+			const divSuccess = document.createElement('div');
+			const divSuccessTitle = document.createElement('h3');
+			const divSuccessDescription = document.createElement('p');
+			const divSuccessCloseButton = document.createElement('button');
+			divSuccess.classList.add('fr-alert', 'fr-alert--success');
+			divSuccessTitle.classList.add('fr-alert__title');
+			divSuccessTitle.innerText = "Indicateur enregistré avec succès";
+			divSuccessDescription.innerText = `L'indicateur ${event.detail.requestConfig.parameters.label} a bien été enregistré`;
+			divSuccessCloseButton.classList.add('fr-btn--close', 'fr-btn');
+			divSuccessCloseButton.title = "Masquer le message";
+			divSuccessCloseButton.onclick = () => divSuccess.remove();
+			divSuccessCloseButton.innerHTML = "Masquer le message";
+			divSuccess.appendChild(divSuccessTitle);
+			divSuccess.appendChild(divSuccessDescription);
+			divSuccess.appendChild(divSuccessCloseButton);
+			main.prepend(divSuccess);
+			main.querySelector('.fr-alert--success').scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+				inline: "nearest"
+			});
+			formReset(indicatorForm);
+			goToForm1();
+		}
+
+		const formula = document.querySelector("#id_formula");
+		const detailed_entry = document.querySelector("#id_detailed_entry");
+		const description = document.querySelector("#id_description");
+		const period = document.querySelector("#id_period");
+		const typeIndicator = document.querySelector("#id_indicator_type");
+		const label = document.querySelector("#id_label");
+		const domain = document.querySelector("#id_domain");
+		const sector = document.querySelector("#id_sector");
+		const fonction = document.querySelector("#id_function");
+
+		formula.value = "FORMULA";
+		formula.required = false;
+		detailed_entry.checked = true;
+		description.value = "DESCRIPTION";
+		period.value = "1";
+		typeIndicator.value = "1";
+		label.value = (Math.floor(Math.random() * (1000 - 1 + 1)) + 1).toString();
+		domain.value = "1";
+		sector.value = "3";
+		fonction.value = "2";
+
+		formSubmitEventListener(indicatorForm, indicatorFormSubmitSuccess);
+		formInputAddEventListener(indicatorForm, apiUrlIndicatorFormFieldValidation, csrfToken);
+	</script>
+{% endblock %}
